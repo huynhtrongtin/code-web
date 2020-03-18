@@ -86,8 +86,22 @@
       </div>
     </div>
     <div class="home-page-project-grid">
-      <div class="home-page-project-grid-title">
-        <h4>Project Grid</h4>
+      <div class="home-page-project-grid-group">
+        <div class="home-page-project-grid-title">
+          <h4>Project Grid</h4>
+        </div>
+        <div class="home-page-project-grid-text-right">
+          <i
+            class="fas fa-th"
+            :class="{clickColor: isLeftClickColor}"
+            @click="handleClickSort(1)"
+          ></i>
+          <i
+            class="fas fa-list"
+            :class="{clickColor: isRightClickColor}"
+            @click="handleClickSort(2)"
+          ></i>
+        </div>
       </div>
       <div class="home-page-project-grid-dropdown-select">
         <div class="home-page-project-grid-dropdown-select-item">
@@ -171,6 +185,7 @@
               placeholder="No of Items"
               required
               @click="showModalGrid(3)"
+              v-model="idNoOfItems"
             >
             <i class="fas fa-sort-down" id="arrow"></i>
             <label
@@ -181,13 +196,13 @@
           <transition name=fade>
             <div class="modal-type" v-if="modalGrid === 3">
               <div class="modal-type-content">
-                <div class="modal-type-content-item">
+                <div class="modal-type-content-item" @click="choseItemNOItem('10')">
                   <span>10</span>
                 </div>
-                <div class="modal-type-content-item">
+                <div class="modal-type-content-item" @click="choseItemNOItem('20')">
                   <span>20</span>
                 </div>
-                <div class="modal-type-content-item">
+                <div class="modal-type-content-item" @click="choseItemNOItem('30')">
                   <span>30</span>
                 </div>
               </div>
@@ -196,10 +211,12 @@
         </div>
       </div>
     </div>
+    <home-page-product/>
   </div>
 </template>
 <script>
 import ModalQuickLink from '@/components/menu/modal/modal-quick-link.vue';
+import HomePageProduct from '@/components/content/home-page-product.vue';
 
 export default {
   props: [
@@ -208,6 +225,7 @@ export default {
   ],
   components: {
     ModalQuickLink,
+    HomePageProduct,
   },
   methods: {
     changeShowMenu() {
@@ -244,6 +262,19 @@ export default {
       this.idItemRecent = recent;
       this.modalGrid = 0;
     },
+    choseItemNOItem(noOfItem) {
+      this.idNoOfItems = noOfItem;
+      this.modalGrid = 0;
+    },
+    handleClickSort(id) {
+      if (id === 1) {
+        this.isLeftClickColor = true;
+        this.isRightClickColor = false;
+      } else {
+        this.isLeftClickColor = false;
+        this.isRightClickColor = true;
+      }
+    },
   },
   data() {
     return {
@@ -253,6 +284,9 @@ export default {
       modalGrid: 0,
       idItemType: '',
       idItemRecent: '',
+      idNoOfItems: '',
+      isLeftClickColor: true,
+      isRightClickColor: false,
     };
   },
 };
@@ -299,7 +333,7 @@ export default {
       color: #9b9b9b;
       &.labelfield.labelfield--type {
         top: 5px;
-        transform: translateY(430px);
+        transform: translateY(425px);
         cursor: pointer;
       }
     }
@@ -486,9 +520,29 @@ export default {
     .home-page-project-grid {
       width: 90%;
       padding: 20px;
-      .home-page-project-grid-title {
-        h4 {
-          font-size: 25px;
+      margin: 0 auto;
+      .home-page-project-grid-group {
+        display: flex;
+        justify-content: space-between;
+        .home-page-project-grid-title {
+          h4 {
+            font-size: 25px;
+          }
+        }
+        .home-page-project-grid-text-right {
+          margin: auto 0;
+          i {
+            font-size: 20px;
+            margin-right: 10px;
+            color: #999;
+            cursor: pointer;
+            &:active {
+              color: #333;
+            }
+            &.clickColor {
+              color: #333;
+            }
+          }
         }
       }
       .home-page-project-grid-dropdown-select {
@@ -512,6 +566,7 @@ export default {
               background-color: #fff;
               transform: translateY(-25px);
               box-shadow: 0 0 10px #999;
+              position: absolute;
               .modal-type-content-item {
                 padding: 20px;
                 cursor: pointer;
